@@ -4,47 +4,32 @@
 		 <meta charset="utf-8">
 		 <link rel="stylesheet" type="text/css" href="site.css" />
 		 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		 <script type="text/javascript" src="gamestate.js"></script>
 		 <script type="text/javascript" src="board.js"></script>
+		 <script type="text/javascript" src="vbutils.js"></script>
 		 <script>
 			$('document').ready(function() {
-			
-				var padding = function(number){
-					return number < 10 ? "0" + number : number;
-				};
-
-				/* set the game operation state */
-				var game_is_playable = true;
-
-				/* set initial game time */
-				var seconds_left = 60;
 				
-				/* start drawing */
-				var draw_interval = setInterval(function() { board.draw() }, "100");
-			
-				/* start the countdown */
-				var game_interval = setInterval(function() {
-					
-					--seconds_left;
-					if(seconds_left == 0) {
-						clearInterval(game_interval);
-						clearInterval(draw_interval);
-						seconds_left = 60;
-						game_is_playable = false;
-					}
-					
-					$("#time_left span").text("0:" + padding(seconds_left));
-					
-				}, 1000);
-			
-				/* initalize the new button */
-				$('#new_game').click(function() { 
-					draw_interval = setInterval(function() { board.draw() }, "100");
-					seconds_left = 60;
-					game_is_playable = true;
-				});
-				
-				/* initialize the game board */
+				var gs = new Gamestate();
 				var board = new Board();
+				
+			
+				/* initalize the new game button */
+				$('#new_game').click(function() { 
+				
+					board = new Board();
+					$("#time_left span").text("1:00");
+					
+					gs.start(
+						function() {
+							board.draw()
+						},
+						100,
+						{
+							game_func: function () { $("#time_left span").text("0:" + vbutils.pad(gs.get_time_left())); }
+						}
+					);
+				});
 				
 				$("#game_surface").click(function(e) {
 					/* get coordinates within the canvas element
@@ -56,7 +41,8 @@
 					board.handle_clicked_cell(x, y);
 				});
 				
-				
+				/* Draw a board to begin with */
+				board.draw();
 			});
 		 </script>
 		 <style type="text/css">
