@@ -28,19 +28,23 @@ var Board = function() {
 		var y_cell = Math.floor(ycoor/50);
 		
 		/* delete existing cells */
-		cascade_delete(x_cell, y_cell);
+		var deleted_number_of_cells = cascade_delete(x_cell, y_cell);
 		
 		/* "slide down" old cells */
 		slide_cells_down(10);
 		
 		/* fill in the remaining empty cells */
 		fill_in_cells();
+		
+		return deleted_number_of_cells;
 	};
 	
 	var cascade_delete = function(x_cell, y_cell) {
 	
 		/* if it is already white, don't even bother with the rest of the checks */
-		if(board[y_cell][x_cell] == 0) { return; }
+		if(board[y_cell][x_cell] == 0) { return 0; }
+	
+		var total = 1;
 	
 		/* cache and kill the clicked one */
 		var cached_color = board[y_cell][x_cell];
@@ -48,23 +52,25 @@ var Board = function() {
 		
 		/* top neighbor */
 		if(board[y_cell - 1] && board[y_cell - 1][x_cell] == cached_color) {
-		    cascade_delete(x_cell, y_cell - 1);
+		    total += cascade_delete(x_cell, y_cell - 1);
 		}
 		
 		/* right neighbor */
 		if(board[y_cell] && board[y_cell][x_cell + 1] && board[y_cell][x_cell + 1] == cached_color) {
-			cascade_delete(x_cell + 1, y_cell);
+			total += cascade_delete(x_cell + 1, y_cell);
 		}
 		
 		/* bottom neighbor */
 		if(board[y_cell + 1] && board[y_cell + 1][x_cell] == cached_color) {		
-			cascade_delete(x_cell, y_cell + 1);
+			total += cascade_delete(x_cell, y_cell + 1);
 		}
 		
 		/* left neighbor */
 		if(board[y_cell][x_cell - 1] && board[y_cell][x_cell - 1] == cached_color) {
-			cascade_delete(x_cell - 1, y_cell);
+			total += cascade_delete(x_cell - 1, y_cell);
 		}
+		
+		return total;
 		
 	};
 

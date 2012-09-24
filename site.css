@@ -1,4 +1,3 @@
-#time_left {
-	margin-left: 150px;
+#time_left, #score {
 	font-size: 25pt;
 }

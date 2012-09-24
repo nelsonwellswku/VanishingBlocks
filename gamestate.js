@@ -1,8 +1,9 @@
-var Gamestate = function() {
+var Gamestate = function(s) {
 	var is_playable;
 	var draw_interval;
 	var game_interval;
 	var time_left;
+	var scorer = s;
 	
 	var stop = function() {
 		clearInterval(game_interval);
@@ -15,6 +16,7 @@ var Gamestate = function() {
 		stop();
 		is_playable = true;
 		time_left = 60;
+		scorer.reset();
 		
 		game_interval = setInterval(function() {
 			--time_left;
@@ -31,5 +33,7 @@ var Gamestate = function() {
 	};
 	
 	this.get_time_left = function() { return time_left; };
+	
+	this.get_scorer = function() { return scorer; }
 	
 };

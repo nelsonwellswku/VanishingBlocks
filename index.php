@@ -5,12 +5,16 @@
 		 <link rel="stylesheet" type="text/css" href="site.css" />
 		 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 		 <script type="text/javascript" src="gamestate.js"></script>
+		 <script type="text/javascript" src="scorer.js"></script>
 		 <script type="text/javascript" src="board.js"></script>
 		 <script type="text/javascript" src="vbutils.js"></script>
 		 <script>
 			$('document').ready(function() {
 				
-				var gs = new Gamestate();
+				var scorer = new Scorer(function (s) {
+					return (10 * s) + ( s > 1 ? s * 3 : 0 );
+				});
+				var gs = new Gamestate(scorer);
 				var board = new Board();
 				
 			
@@ -22,11 +26,14 @@
 					
 					gs.start(
 						function() {
-							board.draw()
+							$("#score span").text(gs.get_scorer().get());
+							board.draw();							
 						},
 						100,
 						{
-							game_func: function () { $("#time_left span").text("0:" + vbutils.pad(gs.get_time_left())); }
+							game_func: function () { 							
+								$("#time_left span").text("0:" + vbutils.pad(gs.get_time_left())); 								
+							}
 						}
 					);
 				});
@@ -37,8 +44,9 @@
 					var posX = $(this).position().left, posY = $(this).position().top;
 					var x = e.pageX - posX, y = e.pageY - posY;
 					
-					/* handle the clicked cell */
-					board.handle_clicked_cell(x, y);
+					/* handle the clicked cell */					
+					gs.get_scorer().increase(board.handle_clicked_cell(x, y));
+					
 				});
 				
 				/* Draw a board to begin with */
@@ -50,9 +58,13 @@
 		 </style>
 	</head>
 	<body>
+		<h1>Vanishing Blocks</h1>
+		<button id="new_game">New Game</button>
+		<br><br>
 		<canvas id="game_surface" width="500" height="500"></canvas>
 		<br/>
-		<button id="new_game">New Game</button>
 		<span id="time_left">Time left: <span>1:00</span></span>
+		<br>
+		<span id="score">Score: <span>0</span></span>
 	</body>
 </html>
