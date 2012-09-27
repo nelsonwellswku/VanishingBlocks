@@ -1,27 +1,27 @@
 var Board = function() {
-		
+	
+	var cf = new CellFactory();
+	
+	var generate_random_row = function(length) {
+		var arr = [];
+	
+		for(var i = 0; i < length; i++) {
+			arr.push(cf.create());
+		}
+			
+		return arr;
+	}
+	
 	/* initalize a randomly patterned board */
-	var board = function(self) {
+	var board = function() {
 		var arr = [];
 		
 		for (var i = 0; i < 10; i++) {
-		  arr.push(self.generate_random_row(10));
+		  arr.push(generate_random_row(10));
 		}
 		
 		return arr;
-	}(this);
-	
-				
-	/* initialize the color map */
-	var color_map = {
-		0: "white",
-		1: "blue",
-		2: "red",
-		3: "green",
-		4: "yellow",
-		5: "orange",
-		6: "purple"
-	};
+	}();
 	
 	this.handle_clicked_cell = function(xcoor, ycoor) {
 		var x_cell = Math.floor(xcoor/50);
@@ -42,31 +42,31 @@ var Board = function() {
 	var cascade_delete = function(x_cell, y_cell) {
 	
 		/* if it is already white, don't even bother with the rest of the checks */
-		if(board[y_cell][x_cell] == 0) { return 0; }
+		if(board[y_cell][x_cell].name == "EMPTY") { return 0; }
 	
 		var total = 1;
 	
 		/* cache and kill the clicked one */
-		var cached_color = board[y_cell][x_cell];
-		board[y_cell][x_cell] = 0;
+		var cached_cell = board[y_cell][x_cell].name;
+		board[y_cell][x_cell] = cf.create_EMPTY();
 		
 		/* top neighbor */
-		if(board[y_cell - 1] && board[y_cell - 1][x_cell] == cached_color) {
+		if(board[y_cell - 1] && board[y_cell - 1][x_cell].name == cached_cell) {
 		    total += cascade_delete(x_cell, y_cell - 1);
 		}
 		
 		/* right neighbor */
-		if(board[y_cell] && board[y_cell][x_cell + 1] && board[y_cell][x_cell + 1] == cached_color) {
+		if(board[y_cell] && board[y_cell][x_cell + 1] && board[y_cell][x_cell + 1].name == cached_cell) {
 			total += cascade_delete(x_cell + 1, y_cell);
 		}
 		
 		/* bottom neighbor */
-		if(board[y_cell + 1] && board[y_cell + 1][x_cell] == cached_color) {		
+		if(board[y_cell + 1] && board[y_cell + 1][x_cell].name == cached_cell) {		
 			total += cascade_delete(x_cell, y_cell + 1);
 		}
 		
 		/* left neighbor */
-		if(board[y_cell][x_cell - 1] && board[y_cell][x_cell - 1] == cached_color) {
+		if(board[y_cell][x_cell - 1] && board[y_cell][x_cell - 1].name == cached_cell) {
 			total += cascade_delete(x_cell - 1, y_cell);
 		}
 		
@@ -79,9 +79,9 @@ var Board = function() {
 		
 		for (var i = board.length - 1; i > 0; i--) {
 			for (var j = 0; j < board[i].length; j++) {
-				if(board[i][j] == 0) {
+				if(board[i][j].name == "EMPTY") {
 					board[i][j] = board[i-1][j];
-					board[i-1][j] = 0;
+					board[i-1][j] = cf.create_EMPTY();
 				}
 			}
 		}
@@ -95,8 +95,8 @@ var Board = function() {
 	var fill_in_cells = function () {
 		for (var i = 0; i < board.length; i++) {
 			for (var j = 0; j < board[i].length; j++) {
-				if(board[i][j] == 0) {					
-					board[i][j] = (Math.floor(Math.random() * 6) + 1);					
+				if(board[i][j].name == "EMPTY") {					
+					board[i][j] = cf.create();					
 				}
 			}
 		}
@@ -106,25 +106,20 @@ var Board = function() {
 	    var ctx = $('#game_surface')[0].getContext('2d');
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 3;
-		
+		console.log(board);
 		for (var i = 0; i < board.length; i++) {
 			for (var j = 0; j < board[i].length; j++) {
-				ctx.fillStyle = color_map[ board[i][j] ];
+				
+				ctx.fillStyle = board[i][j].css_color;
 				ctx.fillRect(j * 50, i * 50, 50, 50);
 				ctx.strokeRect(j * 50, i * 50, 50, 50);
+				console.log(board[i][j].is_bomb);
+				if(board[i][j].is_bomb) {
+					ctx.font="30px Arial";
+					ctx.strokeText("B", j * 50 + 15, i * 50 + 35);
+				}
 			}
 		}
 	};
 	
-};
-
-Board.prototype.generate_random_row = function(length) {
-
-	var arr = [];
-	
-	for(var i = 0; i < length; i++) {
-		arr.push(Math.floor(Math.random() * 6) + 1);
-	}
-		
-	return arr;
 };
