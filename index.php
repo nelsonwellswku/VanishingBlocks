@@ -6,6 +6,7 @@
 		 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 		 <script type="text/javascript" src="gamestate.js"></script>
 		 <script type="text/javascript" src="scorer.js"></script>
+		 <script type="text/javascript" src="cellfactory.js"></script>
 		 <script type="text/javascript" src="board.js"></script>
 		 <script type="text/javascript" src="vbutils.js"></script>
 		 <script>
