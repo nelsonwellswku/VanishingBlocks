@@ -39,6 +39,18 @@ var Board = function() {
 		return deleted_number_of_cells;
 	};
 	
+	this.disarm_bomb = function(xcoor, ycoor) {
+		var x_cell = Math.floor(xcoor/50);
+		var y_cell = Math.floor(ycoor/50);
+		
+		if(board[y_cell][x_cell].is_bomb) {
+			board[y_cell][x_cell].is_bomb = false;
+			return true;
+		}
+		
+		return false;
+	};
+	
 	var cascade_delete = function(x_cell, y_cell, cascade_had_bomb) {
 	
 		/* if it is already white, don't even bother with the rest of the checks */

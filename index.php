@@ -9,6 +9,7 @@
 		 <script type="text/javascript" src="cellfactory.js"></script>
 		 <script type="text/javascript" src="board.js"></script>
 		 <script type="text/javascript" src="vbutils.js"></script>
+		 <script type="text/javascript" src="jquery.rightClick.js"></script>
 		 <script>
 			$('document').ready(function() {
 				
@@ -53,6 +54,23 @@
 						gs.get_scorer().decrease(total_from_move * 2);
 					}
 					
+				});
+				
+				$("#game_surface").rightClick(function(e) {
+					/* get coordinates within the canvas element
+					   from: http://stackoverflow.com/questions/3234977 */
+					var posX = $(this).position().left, posY = $(this).position().top;
+					var x = e.pageX - posX, y = e.pageY - posY;
+										
+					var is_bomb = board.disarm_bomb(x, y);
+					
+					/*
+						TODO: Technical debt.  This is not how this should work 
+						but it is past midnight and it does close the ticket...
+					*/ 
+					if(is_bomb) {
+						gs.get_scorer().decrease(-2);
+					}
 				});
 				
 				/* Draw a board to begin with */
