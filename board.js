@@ -45,55 +45,42 @@ var Board = function() {
 		if(board[y_cell][x_cell].name == "EMPTY") { return 0; }
 	
 		var total = 1;
+		var bombs = board[y_cell][x_cell].is_bomb ? 1 : 0;
+		var tmp;
 	
 		/* cache and kill the clicked one */
 		var cached_cell = board[y_cell][x_cell].name;
 		board[y_cell][x_cell] = cf.create_EMPTY();
 		
 		/* top neighbor */
-		if(board[y_cell - 1] && board[y_cell - 1][x_cell].name == cached_cell) {
-		    if( !cascade_had_bomb && !board[y_cell-1][x_cell].is_bomb) {
-				total += cascade_delete(x_cell, y_cell - 1, false)['total'];
-			}
-			else {
-				total += cascade_delete(x_cell, y_cell - 1, true)['total'];
-			}
+		if(board[y_cell - 1] && board[y_cell - 1][x_cell].name == cached_cell) {		    
+			tmp = cascade_delete(x_cell, y_cell - 1, board[y_cell-1][x_cell].is_bomb);
+			total += tmp['total'];
+			bombs += tmp['bombs'];			
 		}
 		
 		/* right neighbor */
 		if(board[y_cell] && board[y_cell][x_cell + 1] && board[y_cell][x_cell + 1].name == cached_cell) {
-			if( !cascade_had_bomb && !board[y_cell][x_cell + 1].is_bomb) {
-				total += cascade_delete(x_cell + 1, y_cell, false)['total'];
-			}
-			else {
-				total += cascade_delete(x_cell + 1, y_cell, true)['total'];
-			}
+				tmp = cascade_delete(x_cell + 1, y_cell, board[y_cell][x_cell + 1].is_bomb);
+				total += tmp['total'];
+				bombs += tmp['bombs'];			
 		}
 		
 		/* bottom neighbor */
 		if(board[y_cell + 1] && board[y_cell + 1][x_cell].name == cached_cell) {
-			if( !cascade_had_bomb && !board[y_cell + 1][x_cell].is_bomb) {
-				total += cascade_delete(x_cell, y_cell + 1, false)['total'];
-			} 
-			else {
-				total += cascade_delete(x_cell, y_cell + 1, true)['total'];
-			}
+				tmp = cascade_delete(x_cell, y_cell + 1, board[y_cell + 1][x_cell].is_bomb);
+				total += tmp['total'];
+				bombs += tmp['bombs'];			
 		}
 		
 		/* left neighbor */
 		if(board[y_cell][x_cell - 1] && board[y_cell][x_cell - 1].name == cached_cell) {
-			if( !cascade_had_bomb && !board[y_cell][x_cell - 1].is_bomb) {
-				total += cascade_delete(x_cell - 1, y_cell, false)['total'];
-			}
-			else {
-				total += cascade_delete(x_cell - 1, y_cell, true)['total'];
-			}			
+				tmp = cascade_delete(x_cell - 1, y_cell, board[y_cell][x_cell - 1].is_bomb);
+				total += tmp['total'];			
+				bombs += tmp['bombs'];
 		}
 		
-		// TODO: cascade_had_bomb is not actually getting SET anywhere,
-		// 		 so the cascade_had_bomb will only be properly set if
-		//		 the player actually CLICKED a bomb
-		return {"total" : total, "cascade_had_bomb" : cascade_had_bomb};
+		return {"total" : total, "bombs" : bombs};
 		
 	};
 
