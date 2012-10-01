@@ -28,7 +28,7 @@ var Board = function() {
 		var y_cell = Math.floor(ycoor/50);
 		
 		/* delete existing cells */
-		var deleted_number_of_cells = cascade_delete(x_cell, y_cell);
+		var deleted_number_of_cells = cascade_delete(x_cell, y_cell, board[y_cell][x_cell].is_bomb);
 		
 		/* "slide down" old cells */
 		slide_cells_down(10);
@@ -39,7 +39,7 @@ var Board = function() {
 		return deleted_number_of_cells;
 	};
 	
-	var cascade_delete = function(x_cell, y_cell) {
+	var cascade_delete = function(x_cell, y_cell, cascade_had_bomb) {
 	
 		/* if it is already white, don't even bother with the rest of the checks */
 		if(board[y_cell][x_cell].name == "EMPTY") { return 0; }
@@ -52,25 +52,48 @@ var Board = function() {
 		
 		/* top neighbor */
 		if(board[y_cell - 1] && board[y_cell - 1][x_cell].name == cached_cell) {
-		    total += cascade_delete(x_cell, y_cell - 1);
+		    if( !cascade_had_bomb && !board[y_cell-1][x_cell].is_bomb) {
+				total += cascade_delete(x_cell, y_cell - 1, false)['total'];
+			}
+			else {
+				total += cascade_delete(x_cell, y_cell - 1, true)['total'];
+			}
 		}
 		
 		/* right neighbor */
 		if(board[y_cell] && board[y_cell][x_cell + 1] && board[y_cell][x_cell + 1].name == cached_cell) {
-			total += cascade_delete(x_cell + 1, y_cell);
+			if( !cascade_had_bomb && !board[y_cell][x_cell + 1].is_bomb) {
+				total += cascade_delete(x_cell + 1, y_cell, false)['total'];
+			}
+			else {
+				total += cascade_delete(x_cell + 1, y_cell, true)['total'];
+			}
 		}
 		
 		/* bottom neighbor */
-		if(board[y_cell + 1] && board[y_cell + 1][x_cell].name == cached_cell) {		
-			total += cascade_delete(x_cell, y_cell + 1);
+		if(board[y_cell + 1] && board[y_cell + 1][x_cell].name == cached_cell) {
+			if( !cascade_had_bomb && !board[y_cell + 1][x_cell].is_bomb) {
+				total += cascade_delete(x_cell, y_cell + 1, false)['total'];
+			} 
+			else {
+				total += cascade_delete(x_cell, y_cell + 1, true)['total'];
+			}
 		}
 		
 		/* left neighbor */
 		if(board[y_cell][x_cell - 1] && board[y_cell][x_cell - 1].name == cached_cell) {
-			total += cascade_delete(x_cell - 1, y_cell);
+			if( !cascade_had_bomb && !board[y_cell][x_cell - 1].is_bomb) {
+				total += cascade_delete(x_cell - 1, y_cell, false)['total'];
+			}
+			else {
+				total += cascade_delete(x_cell - 1, y_cell, true)['total'];
+			}			
 		}
 		
-		return total;
+		// TODO: cascade_had_bomb is not actually getting SET anywhere,
+		// 		 so the cascade_had_bomb will only be properly set if
+		//		 the player actually CLICKED a bomb
+		return {"total" : total, "cascade_had_bomb" : cascade_had_bomb};
 		
 	};
 
@@ -106,14 +129,14 @@ var Board = function() {
 	    var ctx = $('#game_surface')[0].getContext('2d');
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 3;
-		console.log(board);
+		
 		for (var i = 0; i < board.length; i++) {
 			for (var j = 0; j < board[i].length; j++) {
 				
 				ctx.fillStyle = board[i][j].css_color;
 				ctx.fillRect(j * 50, i * 50, 50, 50);
 				ctx.strokeRect(j * 50, i * 50, 50, 50);
-				console.log(board[i][j].is_bomb);
+				
 				if(board[i][j].is_bomb) {
 					ctx.font="30px Arial";
 					ctx.strokeText("B", j * 50 + 15, i * 50 + 35);

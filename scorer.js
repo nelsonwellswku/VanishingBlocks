@@ -4,11 +4,18 @@ var Scorer = function(s_func) {
 	
 	this.increase = function(s) {		
 		if(score_func) {
-			score += score_func(s);
+			var m = score_func(s)
+			score += m;
 		} 
 		else {
 			score += s;
 		}
+		
+		if(m) return m;
+	};
+	
+	this.decrease = function(s) {
+		score -= s;
 	};
 	
 	this.get = function() {

@@ -45,8 +45,20 @@
 					var posX = $(this).position().left, posY = $(this).position().top;
 					var x = e.pageX - posX, y = e.pageY - posY;
 					
+					var score = board.handle_clicked_cell(x, y);
+					var had_bomb = score['cascade_had_bomb'];
+					console.log("had bomb?");
+					console.log(had_bomb);
+					
 					/* handle the clicked cell */					
-					gs.get_scorer().increase(board.handle_clicked_cell(x, y));
+					var total_from_move = gs.get_scorer().increase(score['total']);
+					console.log(total_from_move);
+					if(had_bomb) {
+						console.log("Subtracting...");
+						console.log(total_from_move * 2);
+						gs.get_scorer().decrease(total_from_move * 2);
+					}
+					
 					
 				});
 				
