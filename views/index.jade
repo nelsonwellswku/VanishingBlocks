@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 Vanishing Blocks
+  button#new_game New Game
+  br
+  br
+  canvas#game_surface(width='500', height='500')
+  br
+  span#time_left Time left:
+    span 1:00
+  br
+  span#score Score:
+    span 0

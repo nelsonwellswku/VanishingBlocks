@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		 <meta charset="utf-8">
-		 <link rel="stylesheet" type="text/css" href="site.css" />
-		 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-		 <script type="text/javascript" src="gamestate.js"></script>
-		 <script type="text/javascript" src="scorer.js"></script>
-		 <script type="text/javascript" src="cellfactory.js"></script>
-		 <script type="text/javascript" src="board.js"></script>
-		 <script type="text/javascript" src="vbutils.js"></script>
-		 <script type="text/javascript" src="jquery.rightClick.js"></script>
-		 <script>
 			$('document').ready(function() {
 				
 				var scorer = new Scorer(function (s) {
@@ -76,19 +63,3 @@
 				/* Draw a board to begin with */
 				board.draw();
 			});
-		 </script>
-		 <style type="text/css">
-			canvas { border: 1px solid black; }
-		 </style>
-	</head>
-	<body>
-		<h1>Vanishing Blocks</h1>
-		<button id="new_game">New Game</button>
-		<br><br>
-		<canvas id="game_surface" width="500" height="500"></canvas>
-		<br/>
-		<span id="time_left">Time left: <span>1:00</span></span>
-		<br>
-		<span id="score">Score: <span>0</span></span>
-	</body>
-</html>
