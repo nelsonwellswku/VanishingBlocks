@@ -23,6 +23,7 @@ var Gamestate = function(s) {
       
       if(time_left == 0) {
         stop();
+        $(document).trigger('game_over');
       }
       
       options.game_func();

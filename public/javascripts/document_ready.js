@@ -1,3 +1,4 @@
+/* TODO: Much of this should be refactored / modularized */
 $('document').ready(function() {
         
   var scorer = new Scorer(function (s) {
@@ -58,6 +59,17 @@ $('document').ready(function() {
     if(is_bomb) {
       gs.get_scorer().decrease(-2);
     }
+  });
+
+
+  $(document).on('game_over', function(e) {
+    // save the score to local storage
+    var hs = new high_score();
+    hs.insert({
+      name: "Anonymous",
+      score: gs.get_scorer().get()
+    });
+    $.fancybox( {href : '/ajax/high_score', title : 'High Scores', type : 'iframe'} );
   });
         
   /* Draw a board to begin with */

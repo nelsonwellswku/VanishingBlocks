@@ -4,7 +4,6 @@ body {
 
 h1 {
   font-size: 30pt;
-  float: left;
   padding: 10px;
 }
 
@@ -27,4 +26,17 @@ h1 {
 
 #time_left, #score {
   font-size: 23pt;
+}
+
+#high_score_container {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#high_score_container td {
+  padding: 5px;
+}
+
+.floatleft {
+  float: left;
 }

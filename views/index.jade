@@ -2,7 +2,7 @@ extends layout
 
 block content
   div#game_container
-    h1 Vanishing Blocks
+    h1.floatleft Vanishing Blocks
     button#new_game New Game
     br
     br
@@ -14,3 +14,5 @@ block content
     div#score 
       p Score:
         span 0
+    p(style='display:none')
+      a.fancybox(href='/ajax/high_score')
